@@ -12,6 +12,8 @@ export default function ParkDetails() {
   const { id } = useParams<{ id: string }>();
   const parkId = parseInt(id || "0");
 
+  console.log("Park Details - ID from URL:", id, "Parsed Park ID:", parkId);
+
   const { data: park, isLoading: parkLoading } = useQuery<Park>({
     queryKey: [`/api/parks/${parkId}`],
   });

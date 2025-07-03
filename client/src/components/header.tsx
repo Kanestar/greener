@@ -17,10 +17,8 @@ export function Header() {
               </Link>
             </div>
             <nav className="hidden md:ml-8 md:flex space-x-8">
-              <Link href="/">
-                <a className="text-primary border-b-2 border-primary px-1 pt-1 pb-4 text-sm font-medium">
-                  Dashboard
-                </a>
+              <Link href="/" className="text-primary border-b-2 border-primary px-1 pt-1 pb-4 text-sm font-medium">
+                Dashboard
               </Link>
               <a href="#parks" className="text-gray-500 hover:text-gray-900 px-1 pt-1 pb-4 text-sm font-medium">
                 Parks
