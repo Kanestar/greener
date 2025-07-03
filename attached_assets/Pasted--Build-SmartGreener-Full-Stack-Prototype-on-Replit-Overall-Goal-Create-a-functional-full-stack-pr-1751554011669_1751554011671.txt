@@ -1,0 +1,204 @@
+"Build SmartGreener Full-Stack Prototype on Replit"
+Overall Goal: Create a functional, full-stack prototype of the "SmartGreener" mobile application within a single Replit workspace. This project will demonstrate AI-powered park usage predictions, basic maintenance suggestions, and community event engagement.
+
+Replit Workspace Setup:
+
+Monorepo Structure: Set up the Replit workspace as a monorepo with the following directory structure:
+
+frontend/: For the React Native mobile application.
+
+backend/: For the Flask (Python) API server.
+
+ml_models/: For Python scripts related to machine learning.
+
+iot_sim/: For Python scripts simulating IoT sensor data.
+
+data/: For any static or simulated data files (e.g., parks.json, simulated_usage.csv).
+
+Language Configuration:
+
+Ensure the Replit environment supports Python 3 (for Flask, ML, IoT simulation) and Node.js (for React Native/Expo).
+
+Install necessary packages for both:
+
+Python: Flask, scikit-learn (or tensorflow/pytorch if simple models can be quickly integrated), pandas, numpy, sqlite3 (for backend data storage).
+
+Node.js: expo, react-native, react-navigation/native, react-navigation/stack, axios.
+
+Component Breakdown & Implementation (Leverage Replit AI for each step):
+
+Part 1: Backend API (Flask)
+Objective: Create a Flask API to serve data to the frontend, manage park information, usage predictions, maintenance suggestions, and community events. Use SQLite for simple data persistence.
+
+File: backend/app.py
+
+Initial Setup:
+
+Initialize a Flask app.
+
+Set up a basic SQLite database connection (smartgreener.db).
+
+Define a simple schema for:
+
+parks: id (PK), name, location (text), description.
+
+events: id (PK), park_id (FK to parks), name, date, time, description, signups (integer, default 0).
+
+feedback: id (PK), park_id (FK), message, timestamp.
+
+Add initial dummy data to parks (e.g., "Central Park", "Green Valley Park") and a few events.
+
+API Endpoints:
+
+GET /api/parks: Return a list of all parks, including their current predicted usage and maintenance status (initially derived from dummy data or simple rules).
+
+GET /api/parks/<int:park_id>: Return details for a specific park, including its usage predictions and maintenance suggestions.
+
+GET /api/events: Return a list of all community events.
+
+POST /api/events/<int:event_id>/signup: Increment signups for an event.
+
+POST /api/feedback: Accept new feedback messages for a park.
+
+GET /api/ml/predict_usage/<int:park_id>: (Will be called internally by /api/parks or directly by frontend for specific predictions). This endpoint will trigger the ML model.
+
+Replit AI Guidance:
+
+"Generate Flask boilerplate for a REST API with SQLite integration for parks, events, and feedback tables."
+
+"Create GET /api/parks and GET /api/events endpoints that return JSON data from the SQLite database."
+
+"Implement POST /api/events/<int:event_id>/signup to update the signups count in the database."
+
+"Add a POST /api/feedback endpoint to store user feedback."
+
+Part 2: Machine Learning Model
+Objective: Create a simple Python script for park usage prediction.
+
+File: ml_models/usage_predictor.py
+
+Logic:
+
+Define a function predict_usage(park_id, time_of_day, day_of_week) that returns a string: "Low", "Medium", or "High".
+
+For Hackathon MVP: Implement this with simple rule-based logic or a very basic scikit-learn model trained on simulated data.
+
+Example Rule: "High usage between 10 AM - 4 PM on weekends, Medium on weekdays, Low otherwise."
+
+The model should be callable from the Flask backend.
+
+Data: Create a dummy CSV file data/simulated_usage.csv with columns like park_id, day_of_week, hour_of_day, actual_usage_level (e.g., 0, 1, 2 for Low, Medium, High).
+
+Replit AI Guidance:
+
+"Write a Python function predict_usage(park_id, time_of_day, day_of_week) that uses simple if-else rules to return 'Low', 'Medium', or 'High' usage."
+
+"Show how to integrate this function into the Flask backend/app.py so that GET /api/parks can include a predicted usage for each park."
+
+Part 3: IoT Data Simulation
+Objective: Create a Python script to simulate sensor data that could inform maintenance needs.
+
+File: iot_sim/simulate_sensors.py
+
+Logic:
+
+Write a Python script that generates mock sensor readings (e.g., litter_level: "low"/"medium"/"high", grass_height: "short"/"medium"/"tall").
+
+For the hackathon, this script can simply print the simulated data or, ideally, make a POST request to a simple /api/simulate_maintenance endpoint in your Flask backend (which then updates a maintenance_status field for parks in the SQLite DB).
+
+Run this script periodically (e.g., once every few seconds or manually for demo).
+
+Replit AI Guidance:
+
+"Create a Python script iot_sim/simulate_sensors.py that generates random litter_level and grass_height for a given park_id."
+
+"Show how this simulated data can be used by the Flask backend to update a maintenance_status field for parks, which can then be retrieved by GET /api/parks."
+
+Part 4: Frontend (React Native with Expo)
+Objective: Build the mobile application UI and connect it to the Flask backend.
+
+Directory: frontend/
+
+Initialization: Use Expo to create a new React Native project within this directory.
+
+Screens:
+
+frontend/App.js (or src/screens/HomeScreen.js):
+
+Home Screen: Display a list of parks. For each park, show its name, a simple indicator of current usage (e.g., a colored dot or text like "Low Usage"), and a quick view of maintenance status. Fetch this data from /api/parks.
+
+Include a button to navigate to the Community Events screen.
+
+frontend/src/screens/ParkDetailScreen.js:
+
+Display detailed information for a selected park.
+
+Show predicted usage for different times of the day (e.g., a simple list or text).
+
+Display maintenance suggestions.
+
+List upcoming events for that specific park.
+
+Include a "Submit Feedback" button.
+
+Fetch data from /api/parks/<park_id>.
+
+frontend/src/screens/CommunityEventsScreen.js:
+
+Display a list of all community events.
+
+Each event should show name, date, time, and location.
+
+Include a "Sign Up" button for each event.
+
+Fetch data from /api/events.
+
+frontend/src/screens/UserProfileScreen.js (Basic):
+
+A placeholder screen to show user points/badges (no real logic needed for MVP).
+
+Navigation: Implement basic stack navigation using react-navigation between Home, Park Detail, Community Events, and User Profile screens.
+
+API Integration: Use axios or fetch to make calls to your Flask backend endpoints.
+
+Styling: Apply basic, clean, and responsive styling using React Native components. Aim for a "green" and "natural" aesthetic.
+
+Replit AI Guidance:
+
+"Set up a basic React Native project using Expo in the frontend/ directory."
+
+"Generate the HomeScreen.js with a list of parks, fetching data from http://localhost:5000/api/parks (or the Replit backend URL)."
+
+"Create ParkDetailScreen.js to display park-specific usage predictions and maintenance info, fetching from its respective API."
+
+"Build CommunityEventsScreen.js to list events and allow users to sign up via POST requests to the backend."
+
+"Implement react-navigation to link these screens."
+
+"Add basic responsive styling to all components."
+
+Replit AI Execution Instructions:
+
+Start with Backend: Begin by setting up the Flask backend and its SQLite database, defining the API endpoints.
+
+Proceed to ML/IoT: Develop the ML model and IoT simulation scripts, ensuring they can interact with the backend.
+
+Finally, Frontend: Build the React Native app, connecting it to the now-functional backend.
+
+Iterate and Test: After each major component is built, ensure it runs correctly using Replit's "Run" button and console.
+
+Debugging: If errors occur, use Replit's built-in AI assistant to debug and suggest fixes.
+
+Collaboration: Remember this is a collaborative environment. If working with a team, ensure clear communication and use Replit's shared workspace features.
+
+Deliverables (within the Replit workspace):
+
+A runnable Flask backend.
+
+A runnable React Native frontend (previewable via Expo Go app).
+
+Python scripts for ML prediction and IoT simulation.
+
+All code organized in the specified monorepo structure.
+
+A README.md in the root explaining how to run the project and its features.
